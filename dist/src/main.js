@@ -29,7 +29,7 @@ async function bootstrap() {
     app.use((0, helmet_1.default)());
     app.use((0, express_rate_limit_1.default)({
         windowMs: 1 * 60 * 1000,
-        max: 100000,
+        max: 130000,
     }));
     app.use((0, compression_1.default)());
     app.use((0, morgan_1.default)("combined"));
