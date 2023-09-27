@@ -1,0 +1,113 @@
+{
+	"info": {
+		"_postman_id": "28ef5c81-1d7b-4a81-b268-cb4168434128",
+		"name": "TPS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "14493589"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8000/transaction",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": ""
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "images",
+							"type": "file",
+							"src": "./2.jpeg"
+						},
+						{
+							"key": "videos",
+							"type": "file",
+							"src": "/Users/muhammadtalha/Downloads/2.jpeg"
+						},
+						{
+							"key": "coverImage",
+							"type": "file",
+							"src": "/Users/muhammadtalha/Downloads/2.jpeg"
+						},
+						{
+							"key": "thumbnail",
+							"type": "file",
+							"src": "/Users/muhammadtalha/Downloads/2.jpeg"
+						},
+						{
+							"key": "name",
+							"value": "talha",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "abc",
+							"type": "text"
+						},
+						{
+							"key": "qty",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "minPrice",
+							"value": "2.4",
+							"type": "text"
+						},
+						{
+							"key": "availableToBuy",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "region",
+							"value": "pakistan",
+							"type": "text"
+						},
+						{
+							"key": "developer",
+							"value": "bahview",
+							"type": "text"
+						},
+						{
+							"key": "publisher",
+							"value": "lahore",
+							"type": "text"
+						},
+						{
+							"key": "platform",
+							"value": "this",
+							"type": "text"
+						},
+						{
+							"key": "priceLimit",
+							"value": "{\"max\": 0.0,\"min\": 0.0}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "requirements",
+							"value": "{\"minimal\": {\"reqprocessor\": \"a\", \"reqgraphics\": \"s\",\"reqmemory\": \"s\",\"reqdiskspace\": \"s\",\"reqsystem\": \"s \",\"reqother\": \"s\"},\"recommended\": {\"reqprocessor\": \"s\",\"reqgraphics\": \"s\",\"reqmemory\": \"s\",\"reqdiskspace\": \"s\",\"reqsystem\": \"s\",\"reqother\": \"s\"}}",
+							"contentType": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "categories",
+							"value": "[{\"id\": 12312,\"name\": \"cate\"}]",
+							"contentType": "application/json",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8000/transaction"
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContextProvider = void 0;
+const express_ctx_1 = require("express-ctx");
+class ContextProvider {
+    static get(key) {
+        return (0, express_ctx_1.getValue)(ContextProvider.getKeyWithNamespace(key));
+    }
+    static set(key, value) {
+        (0, express_ctx_1.setValue)(ContextProvider.getKeyWithNamespace(key), value);
+    }
+    static getKeyWithNamespace(key) {
+        return `${ContextProvider.nameSpace}.${key}`;
+    }
+    static setLanguage(language) {
+        ContextProvider.set(ContextProvider.languageKey, language);
+    }
+    static getLanguage() {
+        return ContextProvider.get(ContextProvider.languageKey);
+    }
+}
+ContextProvider.nameSpace = 'request';
+ContextProvider.authUserKey = 'user_key';
+ContextProvider.languageKey = 'language_key';
+exports.ContextProvider = ContextProvider;
+//# sourceMappingURL=context.provider.js.map

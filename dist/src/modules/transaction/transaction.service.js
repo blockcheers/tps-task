@@ -1,0 +1,133 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TransactionService = void 0;
+const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const typeorm_transactional_1 = require("typeorm-transactional");
+const transaction_entity_1 = require("./transaction.entity");
+const image_entity_1 = require("../image/image.entity");
+const category_entity_1 = require("../category/category.entity");
+const video_entity_1 = require("../video/video.entity");
+const path_1 = require("path");
+let TransactionService = class TransactionService {
+    constructor(transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+    async createTransaction(req, files) {
+        const fileImage = files.images;
+        const fileVideos = files.videos;
+        const data = {
+            name: req.name,
+            type: req.type,
+            qty: Number(req.qty),
+            minPrice: Number(req.minPrice),
+            availableToBuy: JSON.parse(req.availableToBuy),
+            thumbnail: files.thumbnail[0].originalname,
+            coverImage: files.coverImage[0].originalname,
+            updated_at: new Date().toISOString(),
+            release_date: new Date().toISOString(),
+            region: req.region,
+            developer: req.developer,
+            publisher: req.publisher,
+            platform: req.platform,
+            priceLimit: JSON.parse(req.priceLimit),
+            requirements: JSON.parse(req.requirements),
+            categories: JSON.parse(req.categories),
+        };
+        const transaction = this.transactionRepository.create(data);
+        const images = [];
+        for (const image of fileImage) {
+            const imageRecord = new image_entity_1.Image();
+            imageRecord.url = image.originalname;
+            imageRecord.transaction = transaction;
+            images.push(imageRecord);
+        }
+        const videos = [];
+        for (const video of fileVideos) {
+            const type = this.getFileType(video.originalname);
+            const videoRecord = new video_entity_1.Video();
+            videoRecord.type = type;
+            videoRecord.url = video.originalname;
+            videoRecord.transaction = transaction;
+            videos.push(videoRecord);
+        }
+        const categoryNames = JSON.parse(req.categories);
+        const categories = [];
+        for (const categoryName of categoryNames) {
+            const categoryRecord = new category_entity_1.Category();
+            categoryRecord.name = categoryName;
+            categoryRecord.transaction = transaction;
+            categories.push(categoryRecord);
+        }
+        await this.transactionRepository.manager.transaction(async (transactionalEntityManager) => {
+            await transactionalEntityManager.save(transaction_entity_1.TransactionEntity, transaction);
+            await transactionalEntityManager.save(image_entity_1.Image, images);
+            await transactionalEntityManager.save(video_entity_1.Video, videos);
+            await transactionalEntityManager.save(category_entity_1.Category, categories);
+        });
+        return transaction;
+    }
+    async getTransactions(pageOptionsDto) {
+        const queryBuilder = this.transactionRepository.createQueryBuilder("transactions");
+        if (!!pageOptionsDto.order) {
+            queryBuilder.orderBy("transactions.createdAt", pageOptionsDto.order);
+        }
+        const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
+        if (items.length > 0) {
+            return items.toPageDto(pageMetaDto);
+        }
+        else {
+            throw new common_1.HttpException("Record not found", common_1.HttpStatus.NOT_FOUND);
+        }
+    }
+    async getTransactionsCount() {
+        const queryBuilder = this.transactionRepository.createQueryBuilder("transactions");
+        const totalRecords = await queryBuilder.getCount();
+        if (totalRecords >= 1) {
+            return totalRecords;
+        }
+        else {
+            throw new common_1.HttpException("Record not found", common_1.HttpStatus.NOT_FOUND);
+        }
+    }
+    getFileType(filename) {
+        const extension = (0, path_1.extname)(filename).toLowerCase();
+        if (extension === ".jpg" || extension === ".jpeg" || extension === ".png") {
+            return "image";
+        }
+        else if (extension === ".mp4" ||
+            extension === ".avi" ||
+            extension === ".mov") {
+            return "video";
+        }
+        return "unknown";
+    }
+    uploadFiles() {
+    }
+};
+__decorate([
+    (0, typeorm_transactional_1.Transactional)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], TransactionService.prototype, "createTransaction", null);
+TransactionService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(transaction_entity_1.TransactionEntity)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
+], TransactionService);
+exports.TransactionService = TransactionService;
+//# sourceMappingURL=transaction.service.js.map
