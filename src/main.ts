@@ -33,11 +33,11 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   );
   app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   app.use(helmet());
-  // app.setGlobalPrefix('/api'); use api as global prefix if you don't have subdomain
+  app.setGlobalPrefix('/api'); // use api as global prefix if you don't have subdomain
   app.use(
     rateLimit({
       windowMs: 1 * 60 * 1000, // 1 minute
-      max: 130000, // limit each IP to 100000 requests per windowMs
+      max: 100000, // limit each IP to 100000 requests per windowMs
     })
   );
   app.use(compression());
@@ -100,8 +100,9 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   return app;
 }
 
-if (cluster.isMaster) {
+if (cluster.isPrimary) {
   const numCPUs = os.cpus().length;
+  console.log("Number of CPUs: ", numCPUs)
   for (let i = 0; i < numCPUs; i++) {
     cluster.fork();
   }

@@ -26,45 +26,27 @@ let TransactionService = class TransactionService {
     constructor(transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
-    async createTransaction(req, files) {
-        const fileImage = files.images;
-        const fileVideos = files.videos;
+    async createTransaction(req) {
         const data = {
             name: req.name,
             type: req.type,
             qty: Number(req.qty),
             minPrice: Number(req.minPrice),
             availableToBuy: JSON.parse(req.availableToBuy),
-            thumbnail: files.thumbnail[0].originalname,
-            coverImage: files.coverImage[0].originalname,
+            thumbnail: req.thumbnail,
+            coverImage: req.coverImage,
             updated_at: new Date().toISOString(),
             release_date: new Date().toISOString(),
             region: req.region,
             developer: req.developer,
             publisher: req.publisher,
             platform: req.platform,
-            priceLimit: JSON.parse(req.priceLimit),
-            requirements: JSON.parse(req.requirements),
-            categories: JSON.parse(req.categories),
+            priceLimit: req.priceLimit,
+            requirements: req.requirements,
+            categories: req.categories,
         };
         const transaction = this.transactionRepository.create(data);
-        const images = [];
-        for (const image of fileImage) {
-            const imageRecord = new image_entity_1.Image();
-            imageRecord.url = image.originalname;
-            imageRecord.transaction = transaction;
-            images.push(imageRecord);
-        }
-        const videos = [];
-        for (const video of fileVideos) {
-            const type = this.getFileType(video.originalname);
-            const videoRecord = new video_entity_1.Video();
-            videoRecord.type = type;
-            videoRecord.url = video.originalname;
-            videoRecord.transaction = transaction;
-            videos.push(videoRecord);
-        }
-        const categoryNames = JSON.parse(req.categories);
+        const categoryNames = req.categories;
         const categories = [];
         for (const categoryName of categoryNames) {
             const categoryRecord = new category_entity_1.Category();
@@ -74,8 +56,8 @@ let TransactionService = class TransactionService {
         }
         await this.transactionRepository.manager.transaction(async (transactionalEntityManager) => {
             await transactionalEntityManager.save(transaction_entity_1.TransactionEntity, transaction);
-            await transactionalEntityManager.save(image_entity_1.Image, images);
-            await transactionalEntityManager.save(video_entity_1.Video, videos);
+            await transactionalEntityManager.save(image_entity_1.Image, req.images);
+            await transactionalEntityManager.save(video_entity_1.Video, req.videos);
             await transactionalEntityManager.save(category_entity_1.Category, categories);
         });
         return transaction;
@@ -121,7 +103,7 @@ let TransactionService = class TransactionService {
 __decorate([
     (0, typeorm_transactional_1.Transactional)(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], TransactionService.prototype, "createTransaction", null);
 TransactionService = __decorate([

@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   HttpCode,
@@ -9,61 +8,48 @@ import {
   Res,
   ValidationPipe,
   Request,
-  UploadedFile,
-  UploadedFiles,
-  UseInterceptors,
+  Header,
+  Version,
 } from "@nestjs/common";
 import {
   ApiResponse,
   ApiTags,
-  ApiConsumes,
-  ApiOperation,
 } from "@nestjs/swagger";
 
 import { PageDto } from "../../common/dto/page.dto";
-import { IFile } from "../../interfaces";
-import { ApiPageOkResponse, ApiFile } from "../../decorators";
+import { ApiPageOkResponse} from "../../decorators";
 import { TransactionService } from "./transaction.service";
-import { Multer } from "multer";
 import { extname } from "path";
 import { PageOptionsDto } from "../../common/dto/page-options.dto";
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from "@nestjs/platform-express";
+import { TransactionDto } from "./transaction.dto";
 
 @Controller("transaction")
 @ApiTags("transaction")
 export class TransactionController {
   constructor(private transactionService: TransactionService) {}
 
-  @Post("/")
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "images", maxCount: 5 },
-      { name: "videos", maxCount: 5 },
-      { name: "coverImage", maxCount: 1 },
-      { name: "thumbnail", maxCount: 1 },
-    ])
-  )
+  @Version("1")
+  @Post()
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Registration of Type',
+    type: TransactionDto,
+  })
+  @Header('Content-Type', 'application/json')
   async create(
-    @UploadedFiles() files: { images?: Multer.File[]; videos?: Multer.File[] },
     @Request() req: any,
-    @Res() res: any
+    @Res() res: any,
   ) {
-    const record = await this.transactionService.createTransaction(
-      req.body,
-      files
-    );
-
+    const record = await this.transactionService.createTransaction(req.body);
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
-      message: "Records added",
+      message: 'Records added',
       data: record,
     });
   }
 
-  @Get("/")
+  @Version("1")
+  @Get()
   @HttpCode(HttpStatus.OK)
   @ApiPageOkResponse({
     type: PageDto,
@@ -83,14 +69,13 @@ export class TransactionController {
     });
   }
 
+  @Version("1")
   @Get("/count")
   @HttpCode(HttpStatus.OK)
   @ApiPageOkResponse({
     type: PageDto,
   })
-  async getTransactionsCount(
-    @Res() res: any
-  ): Promise<any> {
+  async getTransactionsCount(@Res() res: any): Promise<any> {
     const records = await this.transactionService.getTransactionsCount();
     res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,

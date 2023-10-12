@@ -45,9 +45,7 @@ class CategoryDto {
   name: string;
 }
 
-export class GameDto {
-  @IsString()
-  id: string;
+export class TransactionDto {
 
   @IsString()
   name: string;
@@ -73,12 +71,6 @@ export class GameDto {
   @IsArray()
   @IsString({ each: true })
   images: string[];
-
-  @IsDate()
-  updated_at: Date;
-
-  @IsDate()
-  release_date: Date;
 
   @IsString()
   region: string;

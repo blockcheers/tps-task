@@ -27,9 +27,10 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(), { cors: true });
     app.enable("trust proxy");
     app.use((0, helmet_1.default)());
+    app.setGlobalPrefix('/api');
     app.use((0, express_rate_limit_1.default)({
         windowMs: 1 * 60 * 1000,
-        max: 130000,
+        max: 100000,
     }));
     app.use((0, compression_1.default)());
     app.use((0, morgan_1.default)("combined"));
@@ -69,8 +70,9 @@ async function bootstrap() {
     return app;
 }
 exports.bootstrap = bootstrap;
-if (node_cluster_1.default.isMaster) {
+if (node_cluster_1.default.isPrimary) {
     const numCPUs = node_os_1.default.cpus().length;
+    console.log("Number of CPUs: ", numCPUs);
     for (let i = 0; i < numCPUs; i++) {
         node_cluster_1.default.fork();
     }

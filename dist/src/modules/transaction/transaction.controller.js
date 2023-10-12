@@ -20,16 +20,16 @@ const decorators_1 = require("../../decorators");
 const transaction_service_1 = require("./transaction.service");
 const path_1 = require("path");
 const page_options_dto_1 = require("../../common/dto/page-options.dto");
-const platform_express_1 = require("@nestjs/platform-express");
+const transaction_dto_1 = require("./transaction.dto");
 let TransactionController = class TransactionController {
     constructor(transactionService) {
         this.transactionService = transactionService;
     }
-    async create(files, req, res) {
-        const record = await this.transactionService.createTransaction(req.body, files);
+    async create(req, res) {
+        const record = await this.transactionService.createTransaction(req.body);
         res.status(common_1.HttpStatus.OK).json({
             status: common_1.HttpStatus.OK,
-            message: "Records added",
+            message: 'Records added',
             data: record,
         });
     }
@@ -63,22 +63,23 @@ let TransactionController = class TransactionController {
     }
 };
 __decorate([
-    (0, common_1.Post)("/"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
-        { name: "images", maxCount: 5 },
-        { name: "videos", maxCount: 5 },
-        { name: "coverImage", maxCount: 1 },
-        { name: "thumbnail", maxCount: 1 },
-    ])),
-    __param(0, (0, common_1.UploadedFiles)()),
-    __param(1, (0, common_1.Request)()),
-    __param(2, (0, common_1.Res)()),
+    (0, common_1.Version)("1"),
+    (0, common_1.Post)(),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.CREATED,
+        description: 'Registration of Type',
+        type: transaction_dto_1.TransactionDto,
+    }),
+    (0, common_1.Header)('Content-Type', 'application/json'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], TransactionController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)("/"),
+    (0, common_1.Version)("1"),
+    (0, common_1.Get)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, decorators_1.ApiPageOkResponse)({
         type: page_dto_1.PageDto,
@@ -90,6 +91,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TransactionController.prototype, "getTransactions", null);
 __decorate([
+    (0, common_1.Version)("1"),
     (0, common_1.Get)("/count"),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, decorators_1.ApiPageOkResponse)({

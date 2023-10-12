@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GameDto = void 0;
+exports.TransactionDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 class PriceLimitDto {
@@ -68,90 +68,78 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CategoryDto.prototype, "name", void 0);
-class GameDto {
+class TransactionDto {
 }
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "id", void 0);
+], TransactionDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], GameDto.prototype, "type", void 0);
+], TransactionDto.prototype, "type", void 0);
 __decorate([
     (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
-], GameDto.prototype, "qty", void 0);
+], TransactionDto.prototype, "qty", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], GameDto.prototype, "minPrice", void 0);
+], TransactionDto.prototype, "minPrice", void 0);
 __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
-], GameDto.prototype, "availableToBuy", void 0);
+], TransactionDto.prototype, "availableToBuy", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "thumbnail", void 0);
+], TransactionDto.prototype, "thumbnail", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "coverImage", void 0);
+], TransactionDto.prototype, "coverImage", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)
-], GameDto.prototype, "images", void 0);
-__decorate([
-    (0, class_validator_1.IsDate)(),
-    __metadata("design:type", Date)
-], GameDto.prototype, "updated_at", void 0);
-__decorate([
-    (0, class_validator_1.IsDate)(),
-    __metadata("design:type", Date)
-], GameDto.prototype, "release_date", void 0);
+], TransactionDto.prototype, "images", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "region", void 0);
+], TransactionDto.prototype, "region", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "developer", void 0);
+], TransactionDto.prototype, "developer", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "publisher", void 0);
+], TransactionDto.prototype, "publisher", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], GameDto.prototype, "platform", void 0);
+], TransactionDto.prototype, "platform", void 0);
 __decorate([
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => PriceLimitDto),
     __metadata("design:type", PriceLimitDto)
-], GameDto.prototype, "priceLimit", void 0);
+], TransactionDto.prototype, "priceLimit", void 0);
 __decorate([
     (0, class_validator_1.ValidateNested)(),
     (0, class_transformer_1.Type)(() => RequirementsDto),
     __metadata("design:type", Object)
-], GameDto.prototype, "requirements", void 0);
+], TransactionDto.prototype, "requirements", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => VideoDto),
     __metadata("design:type", Array)
-], GameDto.prototype, "videos", void 0);
+], TransactionDto.prototype, "videos", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => CategoryDto),
     __metadata("design:type", Array)
-], GameDto.prototype, "categories", void 0);
-exports.GameDto = GameDto;
+], TransactionDto.prototype, "categories", void 0);
+exports.TransactionDto = TransactionDto;
 //# sourceMappingURL=transaction.dto.js.map
