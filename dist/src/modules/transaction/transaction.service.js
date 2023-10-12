@@ -21,7 +21,6 @@ const transaction_entity_1 = require("./transaction.entity");
 const image_entity_1 = require("../image/image.entity");
 const category_entity_1 = require("../category/category.entity");
 const video_entity_1 = require("../video/video.entity");
-const path_1 = require("path");
 let TransactionService = class TransactionService {
     constructor(transactionRepository) {
         this.transactionRepository = transactionRepository;
@@ -47,18 +46,17 @@ let TransactionService = class TransactionService {
         };
         const transaction = this.transactionRepository.create(data);
         const categoryNames = req.categories;
-        const categories = [];
-        for (const categoryName of categoryNames) {
-            const categoryRecord = new category_entity_1.Category();
-            categoryRecord.name = categoryName;
-            categoryRecord.transaction = transaction;
-            categories.push(categoryRecord);
-        }
+        const categories = categoryNames.map((categoryName) => ({
+            name: categoryName,
+            transaction,
+        }));
         await this.transactionRepository.manager.transaction(async (transactionalEntityManager) => {
-            await transactionalEntityManager.save(transaction_entity_1.TransactionEntity, transaction);
-            await transactionalEntityManager.save(image_entity_1.Image, req.images);
-            await transactionalEntityManager.save(video_entity_1.Video, req.videos);
-            await transactionalEntityManager.save(category_entity_1.Category, categories);
+            await Promise.all([
+                transactionalEntityManager.save(transaction_entity_1.TransactionEntity, transaction),
+                transactionalEntityManager.save(image_entity_1.Image, req.images),
+                transactionalEntityManager.save(video_entity_1.Video, req.videos),
+                transactionalEntityManager.insert(category_entity_1.Category, categories),
+            ]);
         });
         return transaction;
     }
@@ -84,20 +82,6 @@ let TransactionService = class TransactionService {
         else {
             throw new common_1.HttpException("Record not found", common_1.HttpStatus.NOT_FOUND);
         }
-    }
-    getFileType(filename) {
-        const extension = (0, path_1.extname)(filename).toLowerCase();
-        if (extension === ".jpg" || extension === ".jpeg" || extension === ".png") {
-            return "image";
-        }
-        else if (extension === ".mp4" ||
-            extension === ".avi" ||
-            extension === ".mov") {
-            return "video";
-        }
-        return "unknown";
-    }
-    uploadFiles() {
     }
 };
 __decorate([

@@ -78,4 +78,5 @@ export class TransactionEntity {
 
   @OneToMany(() => Category, (category) => category.transaction)
   categories: Category[];
+  
 }
